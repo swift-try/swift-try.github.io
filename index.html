@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+    content="Scaling imitation learning through end-to-end, egocentric, and unified human-to-robot imitation learning">
+  <!-- <meta name="keywords" content="EgoMimic, EMimic, EgoPlay, Mimic, Imitation"> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SwiftTry: Fast and Consistent Video Virtual Try-On with Diffusion Models</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <!-- <link rel="icon" href="static/images/favicon.svg"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script src="static/js/bulma-carousel.min.js"></script>
+  <script src="static/js/bulma-slider.min.js"></script>
+  <script src="static/js/index.js"></script>
+
+
+  <!-- <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="./_static/css/bulma.min.css">
+  <link rel="stylesheet" href="./_static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./_static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./_static/css/fontawesome.all.min.css"> -->
+  <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css"> -->
+  <!-- <link rel="stylesheet" href="./_static/css/index.css"> -->
+  <link rel="icon" href="https://www.vinai.io/wp-content/themes/vinai/assets/images/favicon.png">
+
+</head>
+
+<body>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              <span class="animated-gradient-text">
+                SwiftTry
+              </span>
+              : Fast and Consistent Video Virtual Try-On with Diffusion Models
+            </h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="https://hungnm66.com">Hung Nguyen*</a>,</span>
+              <span class="author-block">
+                <a href="https://https://nguyenquivinhquang.github.io/">Quang Qui-Vinh Nguyen*</a>,</span>
+              <span class="author-block">
+                <a href="https://khoinguyen.org">Khoi Nguyen</a>,
+              </span>
+              <span class="author-block">
+                <a href="http://rangnguyen.github.io">Rang Nguyen</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">VinAI Research</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2412.10178" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code (Will be available soon)</span>
+                  </a>
+                </span>
+                <!-- Dataset Link. -->
+                <span class="link-block">
+                  <a class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="far fa-images"></i>
+                    </span>
+                    <span>Data (Will be release soon)</span>
+                  </a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <div>
+    <video poster="" autoplay="" muted="" controls="" loop="" height="100%">
+      <source src="static/videos/teaser_webpage.mp4" type="video/mp4">
+    </video>
+    </div>
+
+  <section class="section"></section>
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p style="font-size: 125%">
+            Given an input video of a person and a new garment, the objective of this paper is to synthesize a new
+            video where the person is wearing the specified garment while maintaining spatiotemporal consistency.
+            While significant advances have been made in image-based virtual try-ons, extending these successes to
+            video often results in frame-to-frame inconsistencies. Some approaches have attempted to address this by
+            increasing the overlap of frames across multiple video chunks, but this comes at a steep computational
+            cost due to the repeated processing of the same frames, especially for long video sequence. To address
+            these challenges, we reconceptualize video virtual try-on as a conditional video inpainting task, with
+            garments serving as input conditions. Specifically, our approach enhances image diffusion models by
+            incorporating temporal attention layers to improve temporal coherence. To reduce computational overhead,
+            we introduce ShiftCaching, a novel technique that maintains temporal consistency while minimizing
+            redundant computations. Furthermore, we introduce the TikTokDress dataset, a new video try-on dataset
+            featuring more complex backgrounds, challenging movements, and higher resolution compared to existing
+            public datasets. Extensive experiments show that our approach outperforms current baselines, particularly
+            in terms of video consistency and inference speed. Data and code will be available.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  </section>
+  <section class="section"></section>
+
+  <section>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Pipeline</h2>
+        <div class="publication-video">
+          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+          <!-- Insert image from pdf -->
+          <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 100%;">
+        </div>
+
+        <h2 class="title is-3">Proposed techniques</h2>
+        <div class="publication-video">
+          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
+          <!-- Insert image from pdf -->
+          <img src="./static/images/proposed_techniques.png" alt="Framework" style="width: 100%;">
+        </div>
+      </div>
+    </div>
+    
+
+  </section>
+
+  <h2 class="title is-3 has-text-centered"><span class="dvima">Results</span></h2>
+
+  <div class="wrap-carousel-container">
+    <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on TikTokDress dataset</span></h3>
+    <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
+      <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
+    </button>
+    <div class="wrap-carousel">
+      <div class="wrap-carousel-track">
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00157.mp4-00126_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-11767_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00289.mp4-00758.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00302.mp4-00797.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00356.mp4-00194.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00386.mp4-00764.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00397.mp4-00471.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00400.mp4-00549.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00670.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00770.mp4-00796.png.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00278_00.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00795.mp4-00800.png.mp4" autoplay loop muted></video></div>
+
+      </div>
+    </div>
+    <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
+      <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
+    </button>
+    <div class="wrap-pagination-dots"></div>
+  </div>
+  
+  <!-- add new space between 2 container -->
+  <section class="section"></section>
+  
+  <div class="wrap-carousel-container">
+    <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on VVT dataset</span></h3>
+    <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
+      <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
+    </button>
+    <div class="wrap-carousel">
+      <div class="wrap-carousel-track">
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/4he21d00f-k11.mp4-ch621d03r-a11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0bw-g11.mp4-wr121d01r-a11@15.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0cg-k11.mp4-ev421dajs-q11@12.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/c1821d04o-a11.mp4-to121d05m-m11@30=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/ed121d0qr-k11.mp4-gp021d09v-q11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/es121d0sj-k11.mp4-tw421daa2-a11@10.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/fi021d01k-a11.mp4-to721d0do-k11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/gp021d08c-c11.mp4-wr121d01q-a11@11.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/gu121d0em-q11.mp4-to721d0el-b11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/hi121d0fi-l11.mp4-te421e013-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/m3621d064-q11.mp4-to721d0do-j11@11=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0do-k11.mp4-g1021d05g-k11@16.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+        <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0ep-c11.mp4-ch621d03q-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+
+      </div>
+    </div>
+    <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
+      <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
+    </button>
+    <div class="wrap-pagination-dots"></div>
+  </div>
+  
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Select all carousel containers
+      const carousels = document.querySelectorAll('.wrap-carousel-container');
+    
+      // Loop through each carousel container
+      carousels.forEach((carousel, carouselIndex) => {
+        const wrapTrack = carousel.querySelector('.wrap-carousel-track');
+        const wrapDotsContainer = carousel.querySelector('.wrap-pagination-dots');
+        const wrapPrevButton = carousel.querySelector('.wrap-prev-button');
+        const wrapNextButton = carousel.querySelector('.wrap-next-button');
+        const wrapDots = [];
+        let wrapCurrentIndex = 0;
+        const wrapTotalItems = wrapTrack.children.length;
+    
+        // Dynamically create dots for pagination
+        for (let i = 0; i < wrapTotalItems; i++) {
+          const dot = document.createElement('span');
+          dot.classList.add('wrap-dot');
+          dot.dataset.index = i;
+          wrapDotsContainer.appendChild(dot);
+          wrapDots.push(dot);
+        }
+    
+        // Update carousel display
+        function updateWrapCarousel() {
+          const newTranslateX = -(wrapCurrentIndex * 100) + '%';
+          wrapTrack.style.transform = `translateX(${newTranslateX})`;
+    
+          // Update active dot
+          wrapDots.forEach(dot => dot.classList.remove('active'));
+          if (wrapDots[wrapCurrentIndex]) {
+            wrapDots[wrapCurrentIndex].classList.add('active');
+          }
+        }
+    
+        // Event listeners for navigation buttons
+        wrapPrevButton.addEventListener('click', () => {
+          wrapCurrentIndex = (wrapCurrentIndex - 1 + wrapTotalItems) % wrapTotalItems;
+          updateWrapCarousel();
+        });
+    
+        wrapNextButton.addEventListener('click', () => {
+          wrapCurrentIndex = (wrapCurrentIndex + 1) % wrapTotalItems;
+          updateWrapCarousel();
+        });
+    
+        // Event listeners for dots
+        wrapDots.forEach(dot => {
+          dot.addEventListener('click', (event) => {
+            wrapCurrentIndex = parseInt(event.target.dataset.index);
+            updateWrapCarousel();
+          });
+        });
+    
+        // Initialize the carousel
+        updateWrapCarousel();
+      });
+    });
+    </script>
+  <!--BibTex-->
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{hung2025SwiftTry,
+  author    = {Hung Nguyen*, Quang Qui-Vinh Nguyen*, Khoi Nguyen, Rang Nguyen},
+  title     = {SwiftTry: Fast and Consistent Video Virtual Try-On with Diffusion Models},
+  journal   = {AAAI},
+  year      = {2025},
+}</code></pre>
+    </div>
+  </section>
+
+
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column">
+          <div class="content has-text-centered">
+            <p>
+              Website template borrowed from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>, <a
+                href="https://peract.github.io/">PerAct</a> and <a href="https://mimic-play.github.io">MimicPlay</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Basic Styling to ensure all videos are controlled and responsive -->
+  <style>
+    .carousel .item {
+      display: none;
+      /* Hide all videos initially */
+    }
+
+    .carousel .item video {
+      width: 70%;
+      /* Make the videos smaller */
+      max-width: 400px;
+      /* Set a maximum width */
+      height: auto;
+      /* Maintain aspect ratio */
+      margin: 0 auto;
+      /* Center the video */
+    }
+
+    .carousel .item:first-child {
+      display: block;
+      /* Show the first video by default */
+    }
+
+    .carousel-nav {
+      background-color: #000;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      padding: 10px;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+
+    .carousel-nav:hover {
+      background-color: #555;
+    }
+
+    .icon.is-large {
+      font-size: 2em;
+    }
+  </style>
+  <script>
+    // JavaScript for video carousel
+    document.addEventListener('DOMContentLoaded', () => {
+      const items = document.querySelectorAll('.results-carousel .item');
+      // const descriptionBox = document.getElementById('video-description');
+      let currentIndex = 0;
+
+      // Show the current item and update the description
+      function updateCarousel() {
+        items.forEach((item, index) => {
+          item.classList.toggle('active', index === currentIndex);
+        });
+        const currentItem = items[currentIndex];
+        console.log("Deeee");
+        console.log(currentItem);
+        // descriptionBox.innerHTML = `<b>(${String.fromCharCode(97 + currentIndex)})</b> ` + currentItem.dataset.description;
+      }
+
+      // Set up the next button
+      document.getElementById('next-btn').addEventListener('click', () => {
+        currentIndex = (currentIndex + 1) % items.length;
+        updateCarousel();
+      });
+
+      // Set up the previous button
+      document.getElementById('prev-btn').addEventListener('click', () => {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        updateCarousel();
+      });
+
+      // Initialize the carousel
+      updateCarousel();
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const items = document.querySelectorAll('.item');
+      const taskDescriptions = [
+        "<b>(a) Continuous object-in-bowl:</b> the robot continuously picks a small toy, places it in a bowl, and resets the scene.",
+        "<b>(b) Groceries:</b> the robot picks a shopping bag via a thin handle and places all the chips inside.",
+        "<b>(c) Laundry:</b> the robot folds a polo shirt placed randomly on the table."
+      ];
+      const dots = document.querySelectorAll('.dot');
+      let currentIndex = 0;
+      const taskDescriptionEl = document.getElementById('video-description');
+
+      // Function to show the active video and update dots
+      function showVideo(index) {
+        items.forEach((item, i) => {
+          if (i === index) {
+            item.style.display = 'block';  // Show active item
+          } else {
+            item.style.display = 'none';   // Hide inactive items
+          }
+        });
+        // Update task description
+        taskDescriptionEl.innerHTML = taskDescriptions[index];
+
+        // Update dots
+        dots.forEach((dot, i) => {
+          if (i === index) {
+            dot.classList.add('active');
+          } else {
+            dot.classList.remove('active');
+          }
+        });
+      }
+
+      // Button event listeners
+      document.getElementById('prev-btn').addEventListener('click', function () {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;  // Move backward
+        showVideo(currentIndex);
+      });
+
+      document.getElementById('next-btn').addEventListener('click', function () {
+        currentIndex = (currentIndex + 1) % items.length;  // Move forward
+        showVideo(currentIndex);
+      });
+
+      // Dot event listeners
+      dots.forEach(dot => {
+        dot.addEventListener('click', function () {
+          currentIndex = parseInt(this.getAttribute('data-index'));
+          showVideo(currentIndex);
+        });
+      });
+
+      // Initialize the first video
+      showVideo(currentIndex);
+    });
+
+  </script>
+
+</body>
+
+</html>
