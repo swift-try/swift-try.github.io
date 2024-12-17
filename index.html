@@ -38,7 +38,9 @@
   <script src="static/js/bulma-carousel.min.js"></script>
   <script src="static/js/bulma-slider.min.js"></script>
   <script src="static/js/index.js"></script>
-
+  <script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 
   <!-- <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
@@ -48,7 +50,7 @@
   <link rel="stylesheet" href="./_static/css/fontawesome.all.min.css"> -->
   <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css"> -->
   <!-- <link rel="stylesheet" href="./_static/css/index.css"> -->
-  <link rel="icon" href="https://www.vinai.io/wp-content/themes/vinai/assets/images/favicon.png">
+  <link rel="icon" href="static/images/favicon2.jpg">
 
 </head>
 
@@ -60,11 +62,17 @@
         <div class="columns is-centered">
           <div class="column has-text-centered">
             <h1 class="title is-1 publication-title">
+              [AAAI'25]
               <span class="animated-gradient-text">
                 SwiftTry
               </span>
-              : Fast and Consistent Video Virtual Try-On with Diffusion Models
             </h1>
+            <h2 class="subtitle is-2 publication-subtitle">Fast and Consistent Video Virtual Try-On with Diffusion Models
+            </h2>
+            <h2 class="subtitle is-3 publication-subtitle">
+              <span class="animated-gradient-text">
+                
+              </span>
             <div class="is-size-5 publication-authors">
               <span class="author-block">
                 <a href="https://hungnm66.com">Hung Nguyen*</a>,</span>
@@ -132,7 +140,7 @@
       <div class="column">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          <p style="font-size: 125%">
+          <p style="font-size: 100%">
             Given an input video of a person and a new garment, the objective of this paper is to synthesize a new video where the person is wearing the specified garment while maintaining spatiotemporal consistency. Although significant advances have been made in image-based virtual try-on, extending these successes to video often leads to frame-to-frame inconsistencies. Some approaches have attempted to address this by increasing the overlap of frames across multiple video chunks, but this comes at a steep computational cost due to the repeated processing of the same frames, especially for long video sequences. To tackle these challenges, we reconceptualize video virtual try-on as a conditional video inpainting task, with garments serving as input conditions. Specifically, our approach enhances image diffusion models by incorporating temporal attention layers to improve temporal coherence. To reduce computational overhead, we propose ShiftCaching, a novel technique that maintains temporal consistency while minimizing redundant computations. Furthermore, we introduce the TikTokDress dataset, a new video try-on dataset featuring more complex backgrounds, challenging movements, and higher resolution compared to existing public datasets. Extensive experiments demonstrate that our approach outperforms current baselines, particularly in terms of video consistency and inference speed. Data and code will be available.
           </p>
         </div>
@@ -147,10 +155,17 @@
       <div class="column is-four-fifths">
         <h2 class="title is-3">Pipeline</h2>
         <div class="publication-video">
-          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
-          <!-- Insert image from pdf -->
           <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 100%;">
+          <div style="text-align: center;">
+            <span style="display: inline-block; text-align: justify;  ">
+                Overview of Stage 2 of our <b>SwiftTry</b> framework (Note that stage 1 is similar, 
+                except the input is a single image frame, and it does not include temporal attention layers). 
+                Given an input video and a garment image, our method first extracts the masked video, corresponding masks, and pose sequence. 
+                The masked video is encoded into the latent space by the VAE Encoder, which is then concatenated with noise, masks, and pose features before being processed by the Main U-Net. 
+                To inpaint the garment during the denoising process, we use a Garment U-Net and a CLIP encoder to extract both low- and high-level garment features. 
+                These features are integrated into the Main U-Net through spatial and cross-attention mechanisms.
+            </span>
+        </div>
         </div>
 
         <h2 class="title is-3">Proposed techniques</h2>
@@ -158,8 +173,29 @@
           <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
               frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
           <!-- Insert image from pdf -->
-          <img src="./static/images/proposed_techniques.png" alt="Framework" style="width: 100%;">
+          <img src="./static/images/proposed_techniques_b.png" alt="Framework" style="width: 100%;">
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+          <span style="display: inline-block; text-align: justify;  ">
+            <p>
+              To achieve good temporal coherence and smoothness without recomputing the overlapped regions, 
+              we propose a <strong>shifting mechanism</strong> during inference. Specifically, we divide the long video into 
+              non-overlapping chunks (\(S=0\)). At each DDIM sampling timestep \(t\), we shift these chunks by a predefined 
+              value \(\Delta\) between two consecutive frames, allowing the model to process different compositions of noisy 
+              chunks at each step. An example of a fixed \(\Delta=4\) applied to a chunk with length \(N=8\) is illustrated in 
+              (a)
+             <p>
+            <p> </p>
+              <p>
+              To further accelerate the inference process, we can skip a random chunk to reduce redundant computation during denoising. 
+              However, naively dropping chunks without adjustment can lead to abrupt changes in noise levels in the final results. 
+              Following <a href="https://arxiv.org/abs/2312.00858">DeepCache</a>, which notes that adjacent denoising steps share significant similarities in high-level features, 
+              we instead perform <strong>partial computations</strong> on the Main U-Net. Specifically, we use a cache to copy the latest features from the fully computed timestep 
+              \(z_{t+1}\) (Red frame) and use these features to partially compute the current latent 
+              \(z_t\) (White frame), bypassing the deeper blocks of the U-Net, as illustrated in (b).
+            </p>
+        </span>
         </div>
+        
       </div>
     </div>
     
@@ -229,10 +265,15 @@
     </button>
     <div class="wrap-pagination-dots"></div>
   </div>
-  
 
 
-  <script>
+  <!-- <div style="display:none; color:#dedede; font-size:.5em;"> -->
+    <!-- <div style="color:#d52f2f; font-size:.5em;"> -->
+
+  <script type="text/javascript" id="clustrmaps" src="//clustrmaps.com/map_v2.js?d=LP-83RAQ7ytCtcHzRoegNaCNdXfL5fd9NBBSBBemFwA&cl=ffffff&w=a"></script>
+  <a href="https://clustrmaps.com/site/1c39p"  title="ClustrMaps"><img src="//www.clustrmaps.com/map_v2.png?d=LP-83RAQ7ytCtcHzRoegNaCNdXfL5fd9NBBSBBemFwA&cl=ffffff" /></a>
+ 
+ <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Select all carousel containers
       const carousels = document.querySelectorAll('.wrap-carousel-container');
@@ -304,7 +345,6 @@
 }</code></pre>
     </div>
   </section>
-
 
 
   <footer class="footer">
@@ -455,6 +495,8 @@
     });
 
   </script>
+
+
 
 </body>
 
