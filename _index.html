@@ -137,52 +137,41 @@
       <div class="column">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          <p style="font-size: 110%">
-            Given an input video of a person and a new garment, <span class="animated-gradient-text"> <b>SwiftTry</b></span> can synthesize a new video where the person is 
-            wearing the specified garment while maintaining spatiotemporal consistency. 
-            We reconceptualize video virtual try-on as a conditional video inpainting task, with garments serving as input conditions. 
-            Specifically, our approach enhances image diffusion models by incorporating temporal attention layers to improve temporal coherence. 
-            To reduce computational overhead, we propose <b>ShiftCaching</b>,  a novel technique that maintains temporal consistency while minimizing redundant computations. Furthermore, we introduce the <span class="animated-gradient-text"> <b>TikTokDress</b></span> dataset, a new video try-on dataset featuring more complex backgrounds, challenging movements, and higher resolution compared to existing public datasets.
+          <p style="font-size: 140%">
+            Given an input video of a person and a new garment, <span class="animated-gradient-text"> <b>SwiftTry</b></span> can synthesize a new video where the person is wearing the specified garment while maintaining spatiotemporal consistency. We reconceptualize video virtual try-on as a conditional video inpainting task, with garments serving as input conditions. Specifically, our approach enhances image diffusion models by incorporating temporal attention layers to improve temporal coherence. To reduce computational overhead, we propose ShiftCaching, a novel technique that maintains temporal consistency while minimizing redundant computations. Furthermore, we introduce the <span class="animated-gradient-text"> <b>TikTokDress</b></span> dataset, a new video try-on dataset featuring more complex backgrounds, challenging movements, and higher resolution compared to existing public datasets.
           </p>
         </div>
       </div>
     </div>
   </div>
   </section>
+  <section class="section"></section>
 
-
-  <section class="section">
-    <div class="container is-max-widescreen">
-      <div class="rows">
-      <div class="rows is-centered">
-        <div class="row is-full-width">
-        <h2 class="title is-3 has-text-centered">Our Pipeline</h2>
-        <!-- <div class="publication-video"> -->
-          <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 90%;">
-          <!-- <div style="text-align: center;"> -->
-            <span style="font-size: 110%" >
+  <section>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Our Pipeline</h2>
+        <div class="publication-video">
+          <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 40%;">
+          <div style="text-align: center;">
+            <span style="display: inline-block; text-align: justify; width: 40%; font-size: 140%;" >
                 <br>
                 Given a <b>source video</b> and a <b>garment image</b>, our method first extracts the <b>masked video</b>, corresponding <b>masks</b>, and <b>pose sequence</b> (in yellow box). 
                 The masked video is encoded into the latent space by the VAE Encoder, which is then concatenated with noise, masks, and pose features before being processed by the Main U-Net. 
                 To inpaint the garment during the denoising process, we use a Garment U-Net and a CLIP encoder to extract both low- and high-level garment features. Finally, the VAE decoder decodes the latents into a try-on video clip.
-                The training has 2 stages:
-                <br> 
+                <br>
+              The training has 2 stages:
               <ul>
-                
                 <li> <b>Stage 1:</b> We pre-train the Main U-net, Garment U-net and Pose Encoder on image virtual try-on datasets.</li>
                 <li> <b>Stage 2:</b> We inflate the Unet, inserting temporal layers and then finetune on video try-on dataset. </li>
-              </ul>
-              </span>
-          <!-- </div> -->
-        <!-- </div> -->
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-        <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-
-        <h2 class="title is-3 has-text-centered">Proposed ShiftCaching</h2>
-        <!-- <div class="publication-video"> -->
-          <img src="./static/images/proposed_techniques_b.png" alt="Framework" style="width: 90%;">
+            </span>
+          </div>
+        </div>
+        <h2 class="title is-3">Proposed ShiftCaching</h2>
+        <div class="publication-video">
+          <img src="./static/images/proposed_techniques_b.png" alt="Framework" style="width: 50%;">
           <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-          <span style="font-size: 110%" >
+          <span style="display: inline-block; text-align: justify; font-size: 140%; width: 50%">
             <p>
               To further achieve good temporal coherence and smoothness without recomputing the overlapped regions, 
               we propose a <strong>shifting mechanism</strong> during inference.
@@ -197,31 +186,23 @@
             \(z_{t+1}\) (red) and use these features to partially compute the current latent 
             \(z_t\) (white), bypassing the deeper blocks of the U-Net.
         </span>
-        <!-- </div> -->
+        </div>
       </div>
     </div>
-  </div>
-  </div>
   </section>
-  
-  <section class="section">
-    <div class="container is-max-widescreen">
-      <div class="rows">
-      <div class="rows is-centered">
-        <div class="row is-full-width">
-        <h2 class="title is-3 has-text-centered">TikTokDress dataset</h2>
+  <section>
+    <h2 class="title is-3 has-text-centered"><span class="dvima">TikTokDress Dataset</span></h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-three-quarters">
         <div>
           <video poster="" autoplay="" muted="" controls="" loop="" style="width: 100%; max-width: 1200px; height: auto;">
             <source src="static/videos/tiktokdress.mp4" type="video/mp4">
           </video>
         </div>
-        <span style="font-size: 110%" >
-          <p>Public datasets for single-image virtual try-ons, often suffer from simple backgrounds and limited human poses. The public dataset for video virtual try-on such as VVT 
-            has notable drawbacks, including uniform movements, white backgrounds, and low resolution(256 × 192), making it unsuitable for real world applications.
-            <br> <br>
-            To address these shortcomings, we introduce <span class="animated-gradient-text"> <b>TikTokDress</b></span>  dataset, a high-resolution video virtual try-on dataset that includes complex backgrounds, diverse movements, and balanced gender representation. Each video is paired with its corresponding garment and annotated with detailed human poses and precise binary cloth masks, enhancing its utility for real-world applications.          <p>
-            
-            <!-- <span class="animated-gradient-text"> <b>TikTokDress</b></span> provides each sample with a) garment image, b) high-quality source video, c) masked video, plus d) pose skeleton sequence extracted from source video. -->
+        <span style="display: inline-block; text-align: justify; font-size: 140%; width: 50%">
+          <p>
+            <br>
+            <span class="animated-gradient-text"> <b>TikTokDress</b></span> provides each sample with a) garment image, b) high-quality source video, c) masked video, plus d) pose skeleton sequence extracted from source video.
           </p>
         </span>
       </div>
