@@ -61,19 +61,15 @@
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column has-text-centered">
-            <h1 class="title is-1 publication-title">
-              [AAAI'25]
-              <span class="animated-gradient-text">
-                SwiftTry
-              </span>
-            </h1>
-            <h2 class="subtitle is-2 publication-subtitle">Fast and Consistent Video Virtual Try-On with Diffusion Models
+            <h2 class="subtitle is-1 publication-subtitle">
+              <span class="animated-gradient-text"> <b>SwiftTry: </b></span>
+              <b> Fast and Consistent Video Virtual Try-On with Diffusion Models </b>
             </h2>
-            <h2 class="subtitle is-3 publication-subtitle">
-              <span class="animated-gradient-text">
-                
-              </span>
-            <div class="is-size-5 publication-authors">
+            <div class="subtitle is-3 publication-subtitle">
+              <span class="author-block">AAAI 2025</span>
+
+            <br><br>
+            <div class="is-size-4 publication-authors">
               <span class="author-block">
                 <a href="https://hungnm66.com">Hung Nguyen*</a>,</span>
               <span class="author-block">
@@ -86,9 +82,10 @@
               </span>
             </div>
 
-            <div class="is-size-5 publication-authors">
+            <div class="is-size-4 publication-authors">
               <span class="author-block">VinAI Research</span>
             </div>
+
 
             <div class="column has-text-centered">
               <div class="publication-links">
@@ -115,7 +112,7 @@
                     <span class="icon">
                       <i class="far fa-images"></i>
                     </span>
-                    <span>Data (Will be release soon)</span>
+                    <span>Data (Will be released soon)</span>
                   </a>
               </div>
 
@@ -128,10 +125,10 @@
 
 
   <div>
-    <video poster="" autoplay="" muted="" controls="" loop="" height="100%">
+    <video poster="" autoplay="" muted="" controls="" loop="" style="width: 100%; max-width: 1200px; height: auto;">
       <source src="static/videos/teaser_webpage.mp4" type="video/mp4">
     </video>
-    </div>
+  </div>
 
   <section class="section"></section>
   <div class="container is-max-desktop">
@@ -140,8 +137,8 @@
       <div class="column">
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
-          <p style="font-size: 100%">
-            Given an input video of a person and a new garment, the objective of this paper is to synthesize a new video where the person is wearing the specified garment while maintaining spatiotemporal consistency. Although significant advances have been made in image-based virtual try-on, extending these successes to video often leads to frame-to-frame inconsistencies. Some approaches have attempted to address this by increasing the overlap of frames across multiple video chunks, but this comes at a steep computational cost due to the repeated processing of the same frames, especially for long video sequences. To tackle these challenges, we reconceptualize video virtual try-on as a conditional video inpainting task, with garments serving as input conditions. Specifically, our approach enhances image diffusion models by incorporating temporal attention layers to improve temporal coherence. To reduce computational overhead, we propose ShiftCaching, a novel technique that maintains temporal consistency while minimizing redundant computations. Furthermore, we introduce the TikTokDress dataset, a new video try-on dataset featuring more complex backgrounds, challenging movements, and higher resolution compared to existing public datasets. Extensive experiments demonstrate that our approach outperforms current baselines, particularly in terms of video consistency and inference speed. Data and code will be available.
+          <p style="font-size: 140%">
+            Given an input video of a person and a new garment, <span class="animated-gradient-text"> <b>SwiftTry</b></span> can synthesize a new video where the person is wearing the specified garment while maintaining spatiotemporal consistency. We reconceptualize video virtual try-on as a conditional video inpainting task, with garments serving as input conditions. Specifically, our approach enhances image diffusion models by incorporating temporal attention layers to improve temporal coherence. To reduce computational overhead, we propose ShiftCaching, a novel technique that maintains temporal consistency while minimizing redundant computations. Furthermore, we introduce the <span class="animated-gradient-text"> <b>TikTokDress</b></span> dataset, a new video try-on dataset featuring more complex backgrounds, challenging movements, and higher resolution compared to existing public datasets.
           </p>
         </div>
       </div>
@@ -153,119 +150,133 @@
   <section>
     <div class="columns is-centered has-text-centered">
       <div class="column is-four-fifths">
-        <h2 class="title is-3">Pipeline</h2>
+        <h2 class="title is-3">Our Pipeline</h2>
         <div class="publication-video">
-          <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 100%;">
+          <img src="./static/images/overall_method_final_new.png" alt="Framework" style="width: 40%;">
           <div style="text-align: center;">
-            <span style="display: inline-block; text-align: justify;  ">
-                Overview of Stage 2 of our <b>SwiftTry</b> framework (Note that stage 1 is similar, 
-                except the input is a single image frame, and it does not include temporal attention layers). 
-                Given an input video and a garment image, our method first extracts the masked video, corresponding masks, and pose sequence. 
+            <span style="display: inline-block; text-align: justify; width: 40%; font-size: 140%;" >
+                <br>
+                Given a <b>source video</b> and a <b>garment image</b>, our method first extracts the <b>masked video</b>, corresponding <b>masks</b>, and <b>pose sequence</b> (in yellow box). 
                 The masked video is encoded into the latent space by the VAE Encoder, which is then concatenated with noise, masks, and pose features before being processed by the Main U-Net. 
-                To inpaint the garment during the denoising process, we use a Garment U-Net and a CLIP encoder to extract both low- and high-level garment features. 
-                These features are integrated into the Main U-Net through spatial and cross-attention mechanisms.
+                To inpaint the garment during the denoising process, we use a Garment U-Net and a CLIP encoder to extract both low- and high-level garment features. Finally, the VAE decoder decodes the latents into a try-on video clip.
+                <br>
+              The training has 2 stages:
+              <ul>
+                <li> <b>Stage 1:</b> We pre-train the Main U-net, Garment U-net and Pose Encoder on image virtual try-on datasets.</li>
+                <li> <b>Stage 2:</b> We inflate the Unet, inserting temporal layers and then finetune on video try-on dataset. </li>
             </span>
+          </div>
         </div>
-        </div>
-
-        <h2 class="title is-3">Proposed techniques</h2>
+        <h2 class="title is-3">Proposed ShiftCaching</h2>
         <div class="publication-video">
-          <!-- <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
-              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe> -->
-          <!-- Insert image from pdf -->
-          <img src="./static/images/proposed_techniques_b.png" alt="Framework" style="width: 100%;">
+          <img src="./static/images/proposed_techniques_b.png" alt="Framework" style="width: 50%;">
           <div>&nbsp;&nbsp;&nbsp;&nbsp;</div>
-          <span style="display: inline-block; text-align: justify;  ">
+          <span style="display: inline-block; text-align: justify; font-size: 140%; width: 50%">
             <p>
-              To achieve good temporal coherence and smoothness without recomputing the overlapped regions, 
-              we propose a <strong>shifting mechanism</strong> during inference. Specifically, we divide the long video into 
-              non-overlapping chunks (\(S=0\)). At each DDIM sampling timestep \(t\), we shift these chunks by a predefined 
-              value \(\Delta\) between two consecutive frames, allowing the model to process different compositions of noisy 
-              chunks at each step. An example of a fixed \(\Delta=4\) applied to a chunk with length \(N=8\) is illustrated in 
-              (a)
-             <p>
-            <p> </p>
-              <p>
-              To further accelerate the inference process, we can skip a random chunk to reduce redundant computation during denoising. 
-              However, naively dropping chunks without adjustment can lead to abrupt changes in noise levels in the final results. 
-              Following <a href="https://arxiv.org/abs/2312.00858">DeepCache</a>, which notes that adjacent denoising steps share significant similarities in high-level features, 
-              we instead perform <strong>partial computations</strong> on the Main U-Net. Specifically, we use a cache to copy the latest features from the fully computed timestep 
-              \(z_{t+1}\) (Red frame) and use these features to partially compute the current latent 
-              \(z_t\) (White frame), bypassing the deeper blocks of the U-Net, as illustrated in (b).
+              To further achieve good temporal coherence and smoothness without recomputing the overlapped regions, 
+              we propose a <strong>shifting mechanism</strong> during inference.
             </p>
+            <b>(a)</b> The long video is divided into non-overlapping chunks (\(S=0\), \(N=8\)).
+                At each DDIM sampling timestep \(t\), we shift these chunks by a predefined value \(\Delta=4\) between two consecutive frames, 
+                allowing the model to process different compositions of noisy chunks at each step. To further accelerate the inference process, we can skip a random chunk to reduce redundant computation during denoising. 
+                However, naively dropping chunks without adjustment can lead to abrupt changes in noise levels in the final results. 
+            <br> 
+            <b>(b)</b> Following <a href="https://arxiv.org/abs/2312.00858">DeepCache</a>, which notes that adjacent denoising steps share significant similarities in high-level features, 
+            we instead perform <strong>partial computations</strong> on the Main U-Net. Specifically, we use a cache to copy the latest features from the fully computed timestep 
+            \(z_{t+1}\) (red) and use these features to partially compute the current latent 
+            \(z_t\) (white), bypassing the deeper blocks of the U-Net.
         </span>
         </div>
-        
       </div>
+    </div>
+  </section>
+  <section>
+    <h2 class="title is-3 has-text-centered"><span class="dvima">TikTokDress Dataset</span></h2>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-three-quarters">
+        <div>
+          <video poster="" autoplay="" muted="" controls="" loop="" style="width: 100%; max-width: 1200px; height: auto;">
+            <source src="static/videos/tiktokdress.mp4" type="video/mp4">
+          </video>
+        </div>
+        <span style="display: inline-block; text-align: justify; font-size: 140%; width: 50%">
+          <p>
+            <br>
+            <span class="animated-gradient-text"> <b>TikTokDress</b></span> provides each sample with a) garment image, b) high-quality source video, c) masked video, plus d) pose skeleton sequence extracted from source video.
+          </p>
+        </span>
+      </div>
+    </div>
+  </section>
+  <section class="section"></section>
+
+
+
+  <section>
+    <h2 class="title is-3 has-text-centered"><span class="dvima">Try-on Results</span></h2>
+
+    <div class="wrap-carousel-container">
+      <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on <span class="animated-gradient-text"> <b>TikTokDress</b></span> dataset</span></h3>
+      <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
+        <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
+      </button>
+      <div class="wrap-carousel">
+        <div class="wrap-carousel-track">
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00157.mp4-00126_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-11767_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00289.mp4-00758.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00302.mp4-00797.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00356.mp4-00194.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00386.mp4-00764.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00397.mp4-00471.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00400.mp4-00549.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00670.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00770.mp4-00796.png.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00278_00.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00795.mp4-00800.png.mp4" autoplay loop muted></video></div>
+
+        </div>
+      </div>
+      <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
+        <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
+      </button>
+      <div class="wrap-pagination-dots"></div>
     </div>
     
+    <!-- add new space between 2 container -->
+    <section class="section"></section>
+    
+    <div class="wrap-carousel-container">
+      <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on VVT dataset</span></h3>
+      <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
+        <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
+      </button>
+      <div class="wrap-carousel">
+        <div class="wrap-carousel-track">
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/4he21d00f-k11.mp4-ch621d03r-a11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0bw-g11.mp4-wr121d01r-a11@15.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0cg-k11.mp4-ev421dajs-q11@12.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/c1821d04o-a11.mp4-to121d05m-m11@30=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/ed121d0qr-k11.mp4-gp021d09v-q11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/es121d0sj-k11.mp4-tw421daa2-a11@10.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/fi021d01k-a11.mp4-to721d0do-k11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/gp021d08c-c11.mp4-wr121d01q-a11@11.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/gu121d0em-q11.mp4-to721d0el-b11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/hi121d0fi-l11.mp4-te421e013-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/m3621d064-q11.mp4-to721d0do-j11@11=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0do-k11.mp4-g1021d05g-k11@16.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
+          <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0ep-c11.mp4-ch621d03q-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
 
+        </div>
+      </div>
+      <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
+        <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
+      </button>
+      <div class="wrap-pagination-dots"></div>
+    </div>
   </section>
-
-  <h2 class="title is-3 has-text-centered"><span class="dvima">Results</span></h2>
-
-  <div class="wrap-carousel-container">
-    <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on TikTokDress dataset</span></h3>
-    <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
-      <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
-    </button>
-    <div class="wrap-carousel">
-      <div class="wrap-carousel-track">
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00157.mp4-00126_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00176.mp4-11767_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00289.mp4-00758.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00302.mp4-00797.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00356.mp4-00194.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00386.mp4-00764.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00397.mp4-00471.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00400.mp4-00549.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00670.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00770.mp4-00796.png.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00273_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00791.mp4-00278_00.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/tiktokdress/00795.mp4-00800.png.mp4" autoplay loop muted></video></div>
-
-      </div>
-    </div>
-    <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
-      <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
-    </button>
-    <div class="wrap-pagination-dots"></div>
-  </div>
-  
-  <!-- add new space between 2 container -->
-  <section class="section"></section>
-  
-  <div class="wrap-carousel-container">
-    <h3 class="title is-4 has-text-centered"><span class="dvima">Our results on VVT dataset</span></h3>
-    <button class="wrap-carousel-nav wrap-prev-button" aria-label="Previous">
-      <span class="icon is-large"><i class="fas fa-chevron-left"></i></span>
-    </button>
-    <div class="wrap-carousel">
-      <div class="wrap-carousel-track">
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/4he21d00f-k11.mp4-ch621d03r-a11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0bw-g11.mp4-wr121d01r-a11@15.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/an621d0cg-k11.mp4-ev421dajs-q11@12.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/c1821d04o-a11.mp4-to121d05m-m11@30=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/ed121d0qr-k11.mp4-gp021d09v-q11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/es121d0sj-k11.mp4-tw421daa2-a11@10.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/fi021d01k-a11.mp4-to721d0do-k11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/gp021d08c-c11.mp4-wr121d01q-a11@11.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/gu121d0em-q11.mp4-to721d0el-b11@12=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/hi121d0fi-l11.mp4-te421e013-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/m3621d064-q11.mp4-to721d0do-j11@11=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0do-k11.mp4-g1021d05g-k11@16.1=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-        <div class="wrap-carousel-item"><video src="static/videos/vvt/to721d0ep-c11.mp4-ch621d03q-q11@10=cloth_front.jpg.mp4" autoplay loop muted></video></div>
-
-      </div>
-    </div>
-    <button class="wrap-carousel-nav wrap-next-button" aria-label="Next">
-      <span class="icon is-large"><i class="fas fa-chevron-right"></i></span>
-    </button>
-    <div class="wrap-pagination-dots"></div>
-  </div>
-
 
   <!-- <div style="display:none; color:#dedede; font-size:.5em;"> -->
     <!-- <div style="color:#d52f2f; font-size:.5em;"> -->
